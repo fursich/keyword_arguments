@@ -17,7 +17,11 @@ class KeywordArgumentsTest < Minitest::Test
       result = @caller.put(:foo)
     end
 
-    assert_equal [:foo], result
+    if RUBY_VERSION < "2.7"
+      assert_equal [:foo, {}], result
+    else
+      assert_equal [:foo], result
+    end
     assert_empty err
   end
 
@@ -26,7 +30,11 @@ class KeywordArgumentsTest < Minitest::Test
       result = @caller.put(:foo, {})
     end
 
-    assert_equal [:foo], result
+    if RUBY_VERSION < "2.7"
+      assert_equal [:foo, {}], result
+    else
+      assert_equal [:foo], result
+    end
     assert_empty err
   end
 

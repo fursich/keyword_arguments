@@ -17,7 +17,11 @@ class PositionalArgumentsTest < Minitest::Test
       @caller.put(:foo)
     end
 
-    assert_equal [:foo], result
+    if RUBY_VERSION < "2.7"
+      assert_equal [:foo, {}], result
+    else
+      assert_equal [:foo], result
+    end
     assert_empty err
   end
 
@@ -26,7 +30,11 @@ class PositionalArgumentsTest < Minitest::Test
       @caller.put(:foo, {})
     end
 
-    assert_equal [:foo], result
+    if RUBY_VERSION < "2.7"
+      assert_equal [:foo, {}], result
+    else
+      assert_equal [:foo], result
+    end
     assert_empty err
   end
 
@@ -36,7 +44,9 @@ class PositionalArgumentsTest < Minitest::Test
     end
 
     assert_equal [:foo, { bar: :baz, qux: 123 }], result
-    assert_match 'warning: Using the last argument as keyword parameters is deprecated; maybe ** should be added to the call', err
+    if RUBY_VERSION >= "2.7"
+      assert_match 'warning: Using the last argument as keyword parameters is deprecated; maybe ** should be added to the call', err
+    end
   end
 
   def test_get_method_handles_hash_objects_with_warnings
@@ -45,6 +55,8 @@ class PositionalArgumentsTest < Minitest::Test
     end
 
     assert_equal [:foo, { bar: :baz, qux: 123 }], result
-    assert_match 'warning: Using the last argument as keyword parameters is deprecated; maybe ** should be added to the call', err
+    if RUBY_VERSION >= "2.7"
+      assert_match 'warning: Using the last argument as keyword parameters is deprecated; maybe ** should be added to the call', err
+    end
   end
 end
